@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.precompile.PrecompiledProjectScript.NullPluginDependencySpec.version
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -18,6 +20,33 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        externalNativeBuild {
+            cmake {
+                cppFlags.add("-std=c++20")
+                arguments.addAll(
+                    listOf(
+                        "-DANDROID_STL=c++_shared",
+                        "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,-z,max-page-size=16384",
+                        "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-z,max-page-size=16384"
+                    )
+                )
+            }
+        }
+
+        ndk {
+            // Specify which ABIs you want to support
+            // For smaller APK, use only arm64-v8a
+            // For wider compatibility, include multiple ABIs
+            abiFilters.addAll(listOf("arm64-v8a", "armeabi-v7a"))
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path("src/main/cpp/CMakeLists.txt")
+            version("3.18.1")
+        }
     }
 
     buildTypes {
@@ -28,7 +57,17 @@ android {
                 "proguard-rules.pro"
             )
         }
+
+        debug {
+            // Useful for debugging native code
+            packagingOptions {
+                jniLibs {
+                    keepDebugSymbols.add("**/*.so")
+                }
+            }
+        }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -39,7 +78,14 @@ android {
     buildFeatures {
         compose = true
     }
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+        }
+    }
 }
+
 
 dependencies {
     implementation(libs.androidx.core.ktx)

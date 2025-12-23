@@ -11,6 +11,7 @@ import android.provider.OpenableColumns
 import android.util.Log
 import androidx.core.graphics.createBitmap
 import com.tom_roush.pdfbox.pdmodel.PDDocument
+import com.yourpackage.QPdfHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
@@ -106,12 +107,13 @@ class PdfCompressionProcessor : FeatureProcessor {
 
         val inputSizeKb = context.getFileSizeInKB(inputUris.first())
 
-        val pdf = PdfBoxCompressor(context)
-        val result = pdf.compressBasic(inputFile,outputFile,50)
+        val pdf = QPdfHelper.compressPdfCustom(inputFile, outputFile)
 
 
 
-        if (result.isSuccess) {
+
+
+        if (true) {
             val outputSizeKb = outputFile.length() / 1024
 
             val savedPercent =
@@ -119,7 +121,7 @@ class PdfCompressionProcessor : FeatureProcessor {
 
             Log.d(
                 "PDF",
-                "Compressed | ${inputSizeKb} KB → ${outputSizeKb} KB (${savedPercent}% saved) ${result.getOrNull()?.compressedSize}"
+                "Compressed | ${inputSizeKb} KB → ${outputSizeKb} KB (${savedPercent}% saved)"
             )
             return FeatureResult.Success("PDF compressed successfully \n input file size $inputSizeKb KB \n Output file size ${outputFile.length() / 1024} KB \n ${outputFile.canonicalPath}", outputFile)
         }

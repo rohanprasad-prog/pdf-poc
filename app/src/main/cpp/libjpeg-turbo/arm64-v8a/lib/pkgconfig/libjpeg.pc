@@ -1,0 +1,10 @@
+prefix=/Users/rohan/gg/android-apps/pdfpoc/app/src/main/cpp/libjpeg-turbo/arm64-v8a
+exec_prefix=/Users/rohan/gg/android-apps/pdfpoc/app/src/main/cpp/libjpeg-turbo/arm64-v8a
+libdir=/Users/rohan/gg/android-apps/pdfpoc/app/src/main/cpp/libjpeg-turbo/arm64-v8a/lib
+includedir=/Users/rohan/gg/android-apps/pdfpoc/app/src/main/cpp/libjpeg-turbo/arm64-v8a/include
+
+Name: libjpeg
+Description: A SIMD-accelerated JPEG codec that provides the libjpeg API
+Version: 3.1.3
+Libs: -L${libdir} -ljpeg
+Cflags: -I${includedir}
