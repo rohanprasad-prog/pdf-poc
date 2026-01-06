@@ -42,6 +42,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import com.pubscale.pdf_poc.presentation.PdfViewerScreen
+import com.pubscale.pdf_poc.presentation.edit.PdfEditorScreen
 import com.pubscale.pdf_poc.presentation.merge.MergePdfScreen
 import com.pubscale.pdf_poc.presentation.rearrange.RearrangePdfScreen
 import com.pubscale.pdf_poc.presentation.rearrange.weight
@@ -57,7 +58,7 @@ fun PlaygroundScreen(modifier: Modifier) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    var selectedFeature by remember { mutableStateOf(PdfFeature.PDF_COMPRESSION) }
+    var selectedFeature by remember { mutableStateOf(PdfFeature.PDF_EDITOR) }
     var selectedUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
     var resultText by remember { mutableStateOf("") }
     var resultState by remember { mutableStateOf<FeatureResult?>(null) }
@@ -82,12 +83,15 @@ fun PlaygroundScreen(modifier: Modifier) {
 
         when(screen){
             Screens.EDIT -> {
+                val outputFile = File(
+                    context.getExternalFilesDir(null),
+                    "pdf_to_word_${System.currentTimeMillis()}.pdf"
+                )
+
+
                 showPDFView?.let {
-                    PdfViewerScreen(it.toContentUri(context), {
-                        showPDFView = null
-                        resultState =  null
-                        screen = null
-                    })
+                    PdfEditorScreen(it,outputFile)
+
                 }
             }
             Screens.MERGE ->  showPDFView?.let {
